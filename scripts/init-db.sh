@@ -1,5 +1,4 @@
 #!/bin/bash
-# scripts/init-country.sh
 
 COUNTRY=$1
 
@@ -11,11 +10,9 @@ fi
 # Validate input
 if [ -z "$COUNTRY" ]; then
     echo "❌ Usage: $0 <country_code>"
-    echo "   Example: $0 ca"
+    echo "   Example: $0 benin"
     exit 1
 fi
-
-
 
 # Validate required env vars
 if [ -z "$NEON_USER" ] || [ -z "$NEON_PASSWORD" ] || [ -z "$NEON_HOST" ]; then
