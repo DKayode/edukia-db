@@ -2,7 +2,6 @@
 set -euo pipefail
 
 MIGRATION_FILE=$1
-COUNTRY=$2
 
 # Load environment variables from .env file
 if [ -f .env ]; then
@@ -10,9 +9,9 @@ if [ -f .env ]; then
 fi
 
 # Validate input
-if [ -z "$MIGRATION_FILE" ] || [ -z "$COUNTRY" ]; then
-    echo "❌ Usage: $0 <migration_file.sql> <country_code>"
-    echo "   Example: $0 007_add_report_index.sql benin"
+if [ -z "$MIGRATION_FILE" ]; then
+    echo "❌ Usage: $0 <migration_file.sql>"
+    echo "   Example: $0 007_add_report_index.sql"
     exit 1
 fi
 
@@ -26,10 +25,10 @@ if [ -z "${NEON_USER:-}" ] || [ -z "${NEON_PASSWORD:-}" ] || [ -z "${NEON_HOST:-
     exit 1
 fi
 
-# ── Apply to specific country ──
-DB_URL="postgresql://${NEON_USER}:${NEON_PASSWORD}@${NEON_HOST}/${COUNTRY}?sslmode=require"
+# ── Apply to edukia database ──
+DB_URL="postgresql://${NEON_USER}:${NEON_PASSWORD}@${NEON_HOST}/edukia?sslmode=require"
 
-echo "Applying $(basename "$MIGRATION_FILE") to $COUNTRY..."
+echo "Applying $(basename "$MIGRATION_FILE") ..."
 
 psql "$DB_URL" -v ON_ERROR_STOP=1 -f "./migrations/$MIGRATION_FILE"
 
@@ -45,4 +44,4 @@ if [ -n "$INDEX_NAME" ]; then
     fi
 fi
 
-echo "✅ $COUNTRY done"
+echo "✅ done"
