@@ -4,6 +4,12 @@ INSERT INTO payment_configurations (
   review_delay_hours, daily_withdrawal_limit, monthly_withdrawal_limit,
   kyc_threshold, minimum_wallet_balance, max_withdraw_per_day,
   max_withdraw_per_week, max_withdraw_per_month, automatic_withdrawal,
+  maintenance_mode,
+  otp_enabled, otp_length, otp_ttl_minutes, otp_max_attempts,
+  otp_resend_cooldown_seconds, otp_max_resends, otp_lock_duration_minutes,
+  otp_require_admin_unlock, otp_auto_unlock_enabled, otp_block_withdrawal_creation,
+  otp_provider,
+  is_active
   maintenance_mode, is_active
 ) VALUES (
   500, 50000, 0, 'FIXED',
@@ -11,6 +17,12 @@ INSERT INTO payment_configurations (
   0, 100000, 500000,
   0, 0, 1,
   3, 10, FALSE,
+  FALSE,
+  TRUE, 6, 10, 3,
+  60, 2, 1440,
+  TRUE, FALSE, TRUE,
+  'infobip',
+  TRUE
   FALSE, TRUE
 )
 ON CONFLICT DO NOTHING;
