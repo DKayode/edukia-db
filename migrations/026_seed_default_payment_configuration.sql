@@ -10,7 +10,6 @@ INSERT INTO payment_configurations (
   otp_require_admin_unlock, otp_auto_unlock_enabled, otp_block_withdrawal_creation,
   otp_provider,
   is_active
-  maintenance_mode, is_active
 ) VALUES (
   500, 50000, 0, 'FIXED',
   100, 'XOF', TRUE, TRUE, TRUE,
@@ -23,6 +22,5 @@ INSERT INTO payment_configurations (
   TRUE, FALSE, TRUE,
   'infobip',
   TRUE
-  FALSE, TRUE
 )
 ON CONFLICT DO NOTHING;
