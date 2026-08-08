@@ -40,3 +40,4 @@ CREATE INDEX IF NOT EXISTS idx_withdrawal_otps_request_status ON withdrawal_otps
 CREATE INDEX IF NOT EXISTS idx_withdrawal_otps_user_created ON withdrawal_otps(user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_withdrawal_otps_provider_message_id ON withdrawal_otps(provider_message_id);
 CREATE INDEX IF NOT EXISTS idx_withdrawal_otps_delivery_check ON withdrawal_otps(delivery_status, next_delivery_check_at);
+CREATE INDEX IF NOT EXISTS idx_withdrawal_otps_locked_at ON withdrawal_otps(locked_at) WHERE locked_at IS NOT NULL;
