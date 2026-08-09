@@ -38,7 +38,7 @@ INSERT INTO payment_reward_configurations (
 SELECT
   concours_type.id,
   'CONCOURS',
-  COALESCE(active_config.reward_per_exam, 100),
+  300,
   COALESCE(active_config.currency, 'XOF'),
   COALESCE(active_config.reward_enabled, TRUE),
   COALESCE(active_config.review_delay_hours, 0),
@@ -47,7 +47,7 @@ SELECT
   0,
   0,
   0,
-  '{"seededFrom":"payment_configurations.reward_per_exam","note":"À ajuster côté admin selon les règles concours."}'::jsonb,
+  '{"seededFrom":"036_add_concours_reward_configuration","amount":300,"note":"À ajuster côté admin selon les règles concours."}'::jsonb,
   TRUE
 FROM concours_type
 LEFT JOIN active_config ON TRUE
