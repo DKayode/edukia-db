@@ -1,5 +1,5 @@
 -- Ouvre les numéros Mobile Money au Sénégal (+221) et au Congo-Brazzaville
--- (+242), en plus du Bénin (+229).
+-- (+242), en plus du Bénin (+229), et ajoute Wave aux moyens de paiement.
 --
 -- Deux contraintes CHECK figeaient l'indicatif béninois. Le code applicatif a
 -- beau accepter les trois pays, l'insertion partait en erreur 500 : la
@@ -40,5 +40,24 @@ ALTER TABLE payment_executions
         regexp_replace(phone_number, '[[:space:].-]', '', 'g')
         ~ '^\+(22901[0-9]{8}|2217[05678][0-9]{7}|2420[456][0-9]{7})$'
     ) NOT VALID;
+
+-- Wave rejoint la liste des moyens de paiement : c'est par lui que passe le
+-- virement au Sénégal. Ce n'est pas un opérateur télécom mais un service qui
+-- fonctionne sur tous les réseaux — d'où l'absence de filtre par opérateur
+-- côté applicatif pour ce pays.
+--
+-- Ces deux contraintes-là sont validées (pas de NOT VALID) : elles ne font
+-- qu'élargir une liste que toutes les lignes existantes respectent déjà.
+ALTER TABLE user_payment_accounts
+    DROP CONSTRAINT IF EXISTS user_payment_accounts_operator_check;
+ALTER TABLE user_payment_accounts
+    ADD CONSTRAINT user_payment_accounts_operator_check
+    CHECK (operator IN ('MTN_MOMO', 'MOOV_MONEY', 'CELTIIS_CASH', 'WAVE'));
+
+ALTER TABLE payment_executions
+    DROP CONSTRAINT IF EXISTS payment_executions_provider_check;
+ALTER TABLE payment_executions
+    ADD CONSTRAINT payment_executions_provider_check
+    CHECK (provider IN ('MTN_MOMO', 'MOOV_MONEY', 'CELTIIS_CASH', 'WAVE'));
 
 COMMIT;
