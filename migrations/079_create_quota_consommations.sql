@@ -51,9 +51,18 @@ DO $$ BEGIN
     END IF;
 END $$;
 
+-- Semés DÉSACTIVÉS, à dessein, comme les plans d'abonnement (#244).
+--
+-- Un quota actif dès le déploiement enregistrerait les consommations avant que
+-- le verrou ne soit en service : le jour de la bascule, des utilisateurs se
+-- retrouveraient instantanément bloqués pour des lectures faites à une époque
+-- où rien ne les prévenait. Inactif, rien n'est ni refusé ni compté.
+--
+-- L'administration les ouvre depuis « Abonnements → Quotas gratuits » quand
+-- l'encaissement (#248) est en place.
 INSERT INTO public.configurations_quota (pays, feature, limite, periode_reset, est_actif)
-VALUES ('benin', 'RESOURCE_VIEW', 5, 'MENSUEL', true),
-       ('benin', 'KETSIA_AI',     1, 'MENSUEL', true)
+VALUES ('benin', 'RESOURCE_VIEW', 5, 'MENSUEL', false),
+       ('benin', 'KETSIA_AI',     1, 'MENSUEL', false)
 ON CONFLICT (pays, feature) DO NOTHING;
 
 -- ---------------------------------------------------------------------------
