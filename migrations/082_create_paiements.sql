@@ -101,6 +101,8 @@ CREATE TABLE IF NOT EXISTS public.configurations_paiement (
     montant_min        numeric(14,2) NULL,
     montant_max        numeric(14,2) NULL,
     est_actif          boolean      NOT NULL DEFAULT true,
+    credentials_chiffres jsonb       NULL,
+    credentials_masquees jsonb       NULL,
     date_creation      timestamptz  NOT NULL DEFAULT now(),
     date_modification  timestamptz  NOT NULL DEFAULT now()
 );
@@ -108,6 +110,10 @@ CREATE TABLE IF NOT EXISTS public.configurations_paiement (
 CREATE UNIQUE INDEX IF NOT EXISTS uq_config_paiement_pays_active
     ON public.configurations_paiement(pays)
     WHERE est_actif = true;
+
+ALTER TABLE public.configurations_paiement
+    ADD COLUMN IF NOT EXISTS credentials_chiffres jsonb NULL,
+    ADD COLUMN IF NOT EXISTS credentials_masquees jsonb NULL;
 
 DO $$ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'chk_config_paiement_prestataire') THEN
