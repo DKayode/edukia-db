@@ -121,8 +121,20 @@ DO $$ BEGIN
 END $$;
 
 INSERT INTO public.configurations_paiement (pays, prestataire, mode, devise, est_actif)
-VALUES ('benin', 'KKIAPAY', 'sandbox', 'XOF', true)
-ON CONFLICT DO NOTHING;
+SELECT 'benin', 'KKIAPAY', 'sandbox', 'XOF', true
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM public.configurations_paiement
+    WHERE pays = 'benin' AND prestataire = 'KKIAPAY'
+);
+
+INSERT INTO public.configurations_paiement (pays, prestataire, mode, devise, est_actif)
+SELECT 'benin', 'FEDAPAY', 'sandbox', 'XOF', false
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM public.configurations_paiement
+    WHERE pays = 'benin' AND prestataire = 'FEDAPAY'
+);
 
 -- ---------------------------------------------------------------------------
 -- 4) L'abonnement connaît le dernier paiement qui l'a activé ou tenté
