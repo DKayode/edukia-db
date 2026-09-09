@@ -127,7 +127,7 @@ DO $$ BEGIN
 END $$;
 
 INSERT INTO public.configurations_paiement (pays, prestataire, mode, devise, est_actif)
-SELECT 'benin', 'KKIAPAY', 'sandbox', 'XOF', true
+SELECT 'benin', 'KKIAPAY', 'sandbox', 'XOF', false
 WHERE NOT EXISTS (
     SELECT 1
     FROM public.configurations_paiement
@@ -141,6 +141,14 @@ WHERE NOT EXISTS (
     FROM public.configurations_paiement
     WHERE pays = 'benin' AND prestataire = 'FEDAPAY'
 );
+
+-- A provider without credentials must never become the default checkout path.
+-- This also repairs databases where an earlier preview of this migration was run.
+UPDATE public.configurations_paiement
+   SET est_actif = false,
+       date_modification = now()
+ WHERE credentials_chiffres IS NULL
+   AND est_actif = true;
 
 -- ---------------------------------------------------------------------------
 -- 4) L'abonnement connaît le dernier paiement qui l'a activé ou tenté
