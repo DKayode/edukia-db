@@ -3,8 +3,14 @@
 
 BEGIN;
 
+-- Do not use ON CONFLICT here: production installations use a partial
+-- unique index for active providers, not a unique constraint on these three
+-- columns.  NOT EXISTS stays idempotent across both schemas.
 INSERT INTO public.configurations_paiement (pays, prestataire, mode, devise, est_actif)
-VALUES ('benin', 'REVENUECAT', 'sandbox', 'EUR', false)
-ON CONFLICT (pays, prestataire, mode) DO NOTHING;
+SELECT 'benin', 'REVENUECAT', 'sandbox', 'EUR', false
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.configurations_paiement
+  WHERE pays = 'benin' AND prestataire = 'REVENUECAT' AND mode = 'sandbox'
+);
 
 COMMIT;
